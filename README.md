@@ -1,2 +1,2 @@
-# ParkMateMiner
-miner function for extracting data from com's api
+# ParkingFinder
+Application to find parking in the city of Melbourne

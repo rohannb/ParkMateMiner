@@ -1,0 +1,5 @@
+---
+applications:
+ - name: ParkMateMiner
+   random-route: true
+   memory: 256M
