@@ -40,6 +40,7 @@ app.get('/api/test', function(req, res, next) {
 });
 
 function mine(Parking){
+  console.log("miner reached");
 	var parkingapi = new soda.Consumer('data.melbourne.vic.gov.au');
     var date = new Date();
     //console.log(date);
@@ -71,7 +72,7 @@ function mine(Parking){
 			    var query = {bay_id: rows[i].bay_id};
 			    var temp = {modified: date};
 			    Object.assign(rows[i], temp);
-			    console.log(rows[i]);
+			    //console.log(rows[i]);
 			    Parking.findOneAndUpdate(query, rows[i], {upsert: true}, function(err, doc) {
 				    if (err) console.log(err);
 				    //res.end();
