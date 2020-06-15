@@ -5,6 +5,8 @@ const mongoose = require('mongoose');
 var parkingdb = 'mongodb+srv://admin:sit737group2@parkingdb-myglv.mongodb.net/parkingdb?retryWrites=true&w=majority';
 var rows;
 
+mongoose.set('useFindAndModify', false);  //deprecated warnings
+
 var app = express();
 
 /* GET home page. 
@@ -13,9 +15,34 @@ router.get('/api/test', function(req, res, next) {
 });*/
 
 app.get('/api/test', function(req, res, next) {
-    var parkingapi = new soda.Consumer('data.melbourne.vic.gov.au');
+
+	// define Schema
+    var ParkingSchema = mongoose.Schema({
+      bay_id: Number,
+      st_marker_id: String,
+      status: String,
+      modified: String
+    });
+	var Parking = mongoose.model('Parking', ParkingSchema);
+
+    setInterval(mine, 300000, Parking);			//call mine function every five minutes
+    console.log("loop started");
+    //Mock data to send across to webapp
+    /*
+    locations = []
+    locations.push({'lat':'1234', 'lng':'1234'})
+    locations.push({'lat':'213', 'lng':'123'})
+    locations.push({'lat':'345', 'lng':'657'})
+    locations.push({'lat':'345', 'lng':'453'})
+    //Set the response
+    res.json({locations: locations})
+    */
+});
+
+function mine(Parking){
+	var parkingapi = new soda.Consumer('data.melbourne.vic.gov.au');
     var date = new Date();
-    console.log(date);
+    //console.log(date);
     data = parkingapi.query()
       .withDataset('vh2v-4nfs')
       .limit()
@@ -29,23 +56,10 @@ app.get('/api/test', function(req, res, next) {
 			db.on('error', console.error.bind(console, 'MongoDB connection error:'));
 			db.once("open", function() {
 		  		console.log("MongoDB database connection established successfully");
-
-
-
-		  	// define Schema
-		    var ParkingSchema = mongoose.Schema({
-		      bay_id: Number,
-		      st_marker_id: String,
-		      status: String,
-		      modified: String
-		    });
-
-		    // compile schema to model
-	    	if(Parking==null)
-	    		var Parking = mongoose.model('Parking', ParkingSchema);
+	    		
 	 
 		    // a document instance
-		    console.log(rows);
+		    //console.log(rows);
 		    for (var i=0;i<rows.length;i++)
 		    {
 		    	/*var parking1 = new Parking(rows[i],date);
@@ -58,14 +72,10 @@ app.get('/api/test', function(req, res, next) {
 			    var temp = {modified: date};
 			    Object.assign(rows[i], temp);
 			    console.log(rows[i]);
-			    //console.log(merged);
 			    Parking.findOneAndUpdate(query, rows[i], {upsert: true}, function(err, doc) {
 				    if (err) console.log(err);
-				    res.json("1");
+				    //res.end();
 				});
-				/*console.log("mid ",query);
-				var temp=Parking.findOneAndUpdate(query, { modified: date });
-				console.log("fdvbgf ", temp);*/
 
 		    }
 		    
@@ -74,19 +84,7 @@ app.get('/api/test', function(req, res, next) {
         .on('error', function(error) { console.error(error); });
 
 	});
-	
-	
-    //Mock data to send across to webapp
-    /*
-    locations = []
-    locations.push({'lat':'1234', 'lng':'1234'})
-    locations.push({'lat':'213', 'lng':'123'})
-    locations.push({'lat':'345', 'lng':'657'})
-    locations.push({'lat':'345', 'lng':'453'})
-    //Set the response
-    res.json({locations: locations})
-    */
-});
+}
 
 var port = process.env.PORT || 3000
 app.listen(port, function() {
