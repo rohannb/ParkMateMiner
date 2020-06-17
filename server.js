@@ -28,11 +28,11 @@ var ParkingSchema = mongoose.Schema({
 var Parking = mongoose.model('Parking', ParkingSchema);
 
 //calling mine and store functions at intervals
-cron.schedule("10 * * * * * ", () => {      
+cron.schedule("* 5 * * * * ", () => {      
 mine(Parking);
 });
 
-cron.schedule("20 * * * * * ", () => {
+cron.schedule("* * 1 * * * ", () => {
 store(Parking);
 });
 
