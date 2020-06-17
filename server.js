@@ -2,7 +2,7 @@ var express = require('express');
 //var router = express.Router();
 var soda = require('soda-js');
 const mongoose = require('mongoose');
-var parkingdb = 'mongodb+srv://admin:process.env.atlas_pw@parkingdb-myglv.mongodb.net/parkingdb?retryWrites=true&w=majority';    //process.env.atlas_pw
+var parkingdb = 'mongodb+srv://admin:'+process.env.atlas_pw+'@parkingdb-myglv.mongodb.net/parkingdb?retryWrites=true&w=majority';    //process.env.atlas_pw
 var rows;
 var date = new Date();
 
@@ -124,7 +124,7 @@ function store(Parking){
     //console.log(date);
     data = parkingapi.query()
       .withDataset('vh2v-4nfs')
-      .limit(2)
+      .limit()
       .where({})
       //.where({ within_circle(location,'-37.81586448563712',144.98141868728942,1000) })
       .getRows()
